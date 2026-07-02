@@ -1,0 +1,17 @@
+{
+  "name": "Neighbour Signals",
+  "short_name": "Signals",
+  "description": "A guided Moray community story game and research tool.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e8",
+  "theme_color": "#f6f1e8",
+  "icons": [
+    {
+      "src": "./assets/pip.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

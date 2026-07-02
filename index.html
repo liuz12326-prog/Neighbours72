@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f1e8" />
+    <title>Neighbour Signals | Moray Story Game</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/pip.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand" id="brand-home" aria-label="Return to the game">
+          <span class="brand-mark">NS</span>
+          <span>
+            <strong>NEIGHBOUR SIGNALS</strong>
+            <small>MORAY STORY GAME</small>
+          </span>
+        </button>
+        <div class="header-actions">
+          <span class="sync-status local" id="sync-status" title="Data connection status">
+            <i></i><span>Connecting</span>
+          </span>
+          <button class="icon-button" id="open-help" aria-label="Open game guide" title="Game guide">?</button>
+          <button class="icon-button" id="open-research" aria-label="Open research data" title="Research data">▥</button>
+        </div>
+      </header>
+
+      <nav class="progress" aria-label="Game progress">
+        <button class="progress-step active" data-step="character">
+          <span>01</span><strong>You</strong>
+        </button>
+        <i></i>
+        <button class="progress-step" data-step="moment">
+          <span>02</span><strong>Moment</strong>
+        </button>
+        <i></i>
+        <button class="progress-step" data-step="map">
+          <span>03</span><strong>Map</strong>
+        </button>
+        <i></i>
+        <button class="progress-step" data-step="reflection">
+          <span>04</span><strong>Reflect</strong>
+        </button>
+        <i></i>
+        <button class="progress-step" data-step="result">
+          <span>05</span><strong>Review</strong>
+        </button>
+      </nav>
+
+      <main class="game-frame">
+        <aside class="story-rail">
+          <div class="ticket-number">
+            <span id="story-number">01</span>
+            <small>MORAY STORIES</small>
+          </div>
+          <div class="rail-scene" id="rail-scene">
+            <span class="scene-label">YOUR JOURNEY</span>
+            <div class="scene-art" id="scene-art" aria-hidden="true">✦</div>
+            <h2 id="scene-title">Start with a story</h2>
+            <p id="scene-copy">There are no right answers. Choose what feels closest to your own life.</p>
+          </div>
+          <div class="guide">
+            <img src="./assets/pip.svg" alt="" />
+            <div>
+              <strong>PIP</strong>
+              <p id="guide-copy">I will stay with you, one small step at a time.</p>
+            </div>
+          </div>
+        </aside>
+
+        <section class="game-surface">
+          <section class="screen active" id="screen-welcome" data-screen="welcome">
+            <div class="screen-heading">
+              <span class="eyebrow">BEFORE WE BEGIN</span>
+              <h1>Tell one true story about your community.</h1>
+              <p>Your choices will become a personal connection map. It usually takes 5–8 minutes.</p>
+            </div>
+
+            <div class="welcome-grid">
+              <div class="field-group">
+                <label for="participant-id">Your participant code</label>
+                <input id="participant-id" autocomplete="off" maxlength="24" />
+              </div>
+              <div class="field-group">
+                <label for="age-range">Age range <span>optional</span></label>
+                <select id="age-range">
+                  <option value="">Prefer not to say</option>
+                  <option>55–64</option>
+                  <option>65–74</option>
+                  <option>75–84</option>
+                  <option>85+</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="local-area">Where feels most local?</label>
+                <select id="local-area">
+                  <option>Elgin</option>
+                  <option>Forres</option>
+                  <option>Lossiemouth</option>
+                  <option>Buckie</option>
+                  <option>Speyside</option>
+                  <option>Elsewhere in Moray</option>
+                  <option>Outside Moray</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="consent-check">
+              <input id="consent" type="checkbox" />
+              <span>I am happy for my anonymous answers to be used for this research.</span>
+            </label>
+
+            <div class="privacy-note">
+              <span aria-hidden="true">◉</span>
+              <p id="storage-note">No name, email, address, or precise location is requested. Answers are saved safely before they are submitted.</p>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-character" data-screen="character">
+            <div class="screen-heading">
+              <span class="eyebrow">01 / CHOOSE A VIEWPOINT</span>
+              <h1>Who are you in this story?</h1>
+              <p>Choose yourself, or use a character if that makes the story easier to tell.</p>
+            </div>
+            <div class="character-grid" id="character-grid"></div>
+          </section>
+
+          <section class="screen" id="screen-moment" data-screen="moment">
+            <div class="screen-heading">
+              <span class="eyebrow">02 / PICK A MOMENT</span>
+              <h1>Which moment feels familiar?</h1>
+              <p>Pick one. You can add another story after this round.</p>
+            </div>
+            <div class="moment-grid" id="moment-grid"></div>
+          </section>
+
+          <section class="screen" id="screen-map" data-screen="map">
+            <div class="screen-heading compact-heading">
+              <div>
+                <span class="eyebrow">03 / PLACE IT</span>
+                <h1>Where does this happen?</h1>
+              </div>
+              <div class="selected-token" id="selected-token">📞 <span>Someone I can call</span></div>
+            </div>
+
+            <div class="moray-map" id="moray-map">
+              <div class="firth-band">
+                <span>MORAY FIRTH</span>
+                <b aria-hidden="true">≈ ≈</b>
+                <span aria-hidden="true">🐬</span>
+              </div>
+              <div class="coast-path" aria-hidden="true">COAST PATH · LIGHTHOUSE · HARBOUR</div>
+              <div class="map-grid" id="map-grid"></div>
+              <div class="river" aria-hidden="true">
+                <span>RIVER SPEY</span>
+              </div>
+              <div class="local-marks" aria-hidden="true">
+                <span>🌾 BARLEY</span>
+                <span>◒ WHISKY COUNTRY</span>
+                <span>⌁ COAST</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-reflection" data-screen="reflection">
+            <div class="screen-heading">
+              <span class="eyebrow">04 / REFLECT</span>
+              <h1>What is this moment like for you?</h1>
+              <p>Choose the answers that fit. Only three are required.</p>
+            </div>
+
+            <div class="question-block" data-required="feeling">
+              <div class="question-title">
+                <span>01</span>
+                <h2>How does it feel?</h2>
+                <em>Required</em>
+              </div>
+              <div class="choice-row emotion-row" id="feeling-choices"></div>
+            </div>
+
+            <div class="question-block">
+              <div class="question-title">
+                <span>02</span>
+                <h2>How often does it happen?</h2>
+              </div>
+              <div class="choice-row" id="frequency-choices"></div>
+            </div>
+
+            <div class="question-block" data-required="importance">
+              <div class="question-title">
+                <span>03</span>
+                <h2>How much does this matter?</h2>
+                <em>Required</em>
+              </div>
+              <div class="choice-row importance-row" id="importance-choices"></div>
+            </div>
+
+            <div class="question-block" data-required="support">
+              <div class="question-title">
+                <span>04</span>
+                <h2>What would help most?</h2>
+                <em>Required</em>
+              </div>
+              <div class="choice-grid" id="support-choices"></div>
+            </div>
+
+            <div class="question-block">
+              <div class="question-title">
+                <span>05</span>
+                <h2>Could technology help here?</h2>
+              </div>
+              <div class="choice-row" id="technology-choices"></div>
+            </div>
+
+            <div class="question-block">
+              <div class="question-title">
+                <span>06</span>
+                <h2>Who may know about this?</h2>
+              </div>
+              <div class="choice-grid" id="privacy-choices"></div>
+            </div>
+
+            <div class="question-block">
+              <div class="question-title">
+                <span>07</span>
+                <h2>Anything you want to add?</h2>
+                <em>Optional</em>
+              </div>
+              <textarea id="story-note" rows="4" maxlength="600" placeholder="A short memory, concern, or idea…"></textarea>
+              <span class="character-count"><b id="note-count">0</b> / 600</span>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-result" data-screen="result">
+            <div class="screen-heading result-heading">
+              <span class="eyebrow">05 / YOUR MAP</span>
+              <h1>Your community story is taking shape.</h1>
+              <p id="result-intro">One story can already reveal a useful connection.</p>
+            </div>
+
+            <div class="result-summary">
+              <section class="mini-map-wrap">
+                <div class="mini-map" id="result-map"></div>
+              </section>
+              <section class="signal-summary">
+                <div class="signal-number"><span id="result-count">1</span><small>STORIES</small></div>
+                <div id="personal-insights"></div>
+              </section>
+            </div>
+
+            <div class="story-review">
+              <div class="section-title">
+                <h2>Your story cards</h2>
+                <span id="review-count">1</span>
+              </div>
+              <div id="story-review-list"></div>
+            </div>
+
+            <div class="finish-actions">
+              <button class="secondary-button" id="add-story">＋ Add another story</button>
+              <button class="primary-button" id="finish-session">Finish session →</button>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-finished" data-screen="finished">
+            <div class="finish-panel">
+              <div class="finish-stamp">DONE</div>
+              <span class="eyebrow">THANK YOU</span>
+              <h1>Your stories have been saved.</h1>
+              <p id="finish-sync-copy">They are ready to sync securely with the main research device.</p>
+              <div class="finish-buttons">
+                <button class="primary-button" id="view-data">View research summary</button>
+                <button class="secondary-button" id="new-participant">Start a new participant</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-research" data-screen="research">
+            <div class="screen-heading research-heading">
+              <div>
+                <span class="eyebrow">RESEARCH SUMMARY</span>
+                <h1>What the stories are showing</h1>
+                <p id="research-source-copy">Anonymous patterns collected by this main device.</p>
+              </div>
+              <div class="research-actions">
+                <button class="secondary-button small" id="refresh-research">↻ Refresh</button>
+                <button class="secondary-button small" id="research-logout">Log out</button>
+                <button class="secondary-button small" id="close-research">← Return to game</button>
+              </div>
+            </div>
+
+            <div class="metric-grid" id="metric-grid"></div>
+
+            <div class="dashboard-grid">
+              <section class="chart-panel">
+                <div class="section-title"><h2>Community nodes</h2><span>WHERE</span></div>
+                <div class="bar-chart" id="node-chart"></div>
+              </section>
+              <section class="chart-panel">
+                <div class="section-title"><h2>Support needs</h2><span>WHAT HELPS</span></div>
+                <div class="bar-chart" id="support-chart"></div>
+              </section>
+              <section class="chart-panel">
+                <div class="section-title"><h2>Feelings</h2><span>EXPERIENCE</span></div>
+                <div class="bar-chart" id="feeling-chart"></div>
+              </section>
+              <section class="chart-panel insight-panel">
+                <div class="section-title"><h2>Design signals</h2><span>INTERPRETATION</span></div>
+                <div id="research-insights"></div>
+              </section>
+            </div>
+
+            <div class="data-table-wrap">
+              <div class="section-title">
+                <h2>Story records</h2>
+                <span id="record-count">0 RECORDS</span>
+              </div>
+              <div class="data-table" id="data-table"></div>
+            </div>
+
+            <div class="export-bar">
+              <div>
+                <strong>Export anonymous research data</strong>
+                <span>CSV works with Excel, SPSS, R, and most analysis tools.</span>
+              </div>
+              <button class="secondary-button" id="export-json">↓ JSON</button>
+              <button class="primary-button" id="export-csv">↓ CSV</button>
+              <button class="danger-button" id="clear-data">Clear cloud data</button>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="game-nav" id="game-nav">
+        <button class="nav-button back" id="back-button">← <span>BACK</span></button>
+        <span class="nav-progress" id="nav-progress">START</span>
+        <button class="nav-button next" id="next-button"><span>BEGIN</span> →</button>
+      </footer>
+    </div>
+
+    <dialog id="help-dialog">
+      <button class="dialog-close" id="close-help" aria-label="Close guide">×</button>
+      <span class="eyebrow">HOW TO PLAY</span>
+      <h2>One story, five small steps.</h2>
+      <ol>
+        <li><b>Choose a viewpoint.</b><span>Play as yourself or use a story character.</span></li>
+        <li><b>Pick a familiar moment.</b><span>Choose one situation from daily life.</span></li>
+        <li><b>Put it on the Moray map.</b><span>Select the place or relationship connected to it.</span></li>
+        <li><b>Reflect on what it means.</b><span>Choose feelings, importance, support, technology, and privacy.</span></li>
+        <li><b>Review your signals.</b><span>Add another story or finish and export anonymous data.</span></li>
+      </ol>
+    </dialog>
+
+    <dialog id="admin-dialog">
+      <button class="dialog-close" id="close-admin" aria-label="Close login">×</button>
+      <span class="eyebrow">RESEARCHER ACCESS</span>
+      <h2>View all participant data</h2>
+      <p class="dialog-copy">Enter the researcher password. Participants cannot open the shared dataset.</p>
+      <form id="admin-login-form" class="admin-form">
+        <div class="field-group">
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" autocomplete="current-password" required />
+        </div>
+        <p class="form-error" id="admin-error" role="alert"></p>
+        <button class="primary-button" id="admin-login-button" type="submit">Sign in securely</button>
+      </form>
+    </dialog>
+
+    <dialog id="cloud-setup-dialog">
+      <button class="dialog-close" id="close-cloud-setup" aria-label="Close setup message">×</button>
+      <span class="eyebrow">MAIN DEVICE REQUIRED</span>
+      <h2>Open the shared website address</h2>
+      <p class="dialog-copy">This copy was opened as a file, so it cannot reach the main device. Start <b>start.command</b> on the main device, then open the web address shown in its window.</p>
+      <button class="primary-button" id="close-cloud-setup-action">Return to game</button>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
